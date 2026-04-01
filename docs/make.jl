@@ -1,6 +1,7 @@
 using ECAD
 using Documenter
 using DocumenterCitations
+using Pkg: Pkg
 
 PROJECT_TOML = Pkg.TOML.parsefile(joinpath(@__DIR__, "..", "Project.toml"))
 AUTHORS = PROJECT_TOML["authors"]
@@ -16,7 +17,7 @@ DocMeta.setdocmeta!(ECAD, :DocTestSetup, :(using ECAD); recursive = true)
 
 makedocs(;
     modules = [ECAD],
-    authors = join(',', AUTHORS),
+    authors = join(", ", AUTHORS),
     sitename = "ECAD.jl",
     format = Documenter.HTML(;
         prettyurls = true,
@@ -24,7 +25,6 @@ makedocs(;
         edit_link = "main",
         assets = String["assets/citations.css"],
     ),
-    remotes = nothing,
     pages = [
         "Home" => "index.md",
         "API" => "api.md",

@@ -119,17 +119,17 @@ macro defvariable(T, canonical, sha = nothing)
     end
 end
 
-@defvariable CloudCover cc
-@defvariable WindDirection dd
-@defvariable WindSpeed fg
-@defvariable WindGust fx
-@defvariable Humidity hu
+@defvariable CloudCover cc "3e24f0d040fb10a44e47c0d0065edbf48688c27948b8ac1f30b2de6e6db182bb"
+@defvariable WindDirection dd "0fe438168776fb7beb384cb3ba1257ae5c74770e917ca9c949440a04189dfad2"
+@defvariable WindSpeed fg "a38e9e812e6b00f54aeda8a5ae65faf9cbfad84c1f59f4bc010fad87f05c20c8"
+@defvariable WindGust fx "287c6440c0e4f6bc55185b676c77e235039372fc0324e1460aadaaa927b7ae6f"
+@defvariable Humidity hu "aeb5115c2050b830f356ffe86a3a354e4c0d3a12f362b69f022e188f2b82ed7e"
 @defvariable SeaLevelPressure pp "5450696a0df010a9e9e2b0d063d4054caab3bec28b68439fe55c73c5214686c4"
-@defvariable GlobalRadiation qq
+@defvariable GlobalRadiation qq "92a2e64377ff7c2cb841307b28435a14fb577cc560d912e6527b5b1a675e4e0c"
 @defvariable MaximumHourlyPrecipitation rhx
-@defvariable PrecipitationAmount rr
+@defvariable PrecipitationAmount rr "4c18349e24b952ffc09a96fa439edeb7ab204b13c955b36f90cffb342f687daa"
 @defvariable SnowDepth sd "5100f26849dfbf01f38c612b987aad39b3b49acf5127b2f2c1d8ed604522b493"
-@defvariable SunshineDuration ss
-@defvariable MeanTemperature tg
+@defvariable SunshineDuration ss "2e8ab89edd1f1fba798df27e429e393c6bb14b868b483334fc31a193671ebdd0"
+@defvariable MeanTemperature tg "e7440855706947ea185a30ed4b57ea0f37031d484b8a8be43e87143ac0efe19f"
 @defvariable MinimumTemperature tn "447e11a903490b63e9b159530a12dd60a80b8f9e55c8dec6ce861c310e2e2d4c"
 @defvariable MaximumTemperature tx "8249f3ed31b2a94b3649dd8660f5b7f21cd235dd1733e3b3edd0855d9726cae9"

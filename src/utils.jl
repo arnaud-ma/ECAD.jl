@@ -1,6 +1,3 @@
-using Chain: @chain
-using Printf: @sprintf
-
 """
     camelcase_to_words(io::IO, s::AbstractString)
 

@@ -1,12 +1,3 @@
-using ZipArchives: ZipReader, ZipArchives, zip_names, zip_readentry
-using Chain: @chain
-using ArgCheck: @argcheck
-using DataFramesMeta: @transform!, select!, ByRow, @rsubset
-using CSV: CSV
-using SplitApplyCombine: invert
-using Mmap: Mmap
-
-
 """
     VariableData(variable::Variable, filepath::String; memory_map = true)
 

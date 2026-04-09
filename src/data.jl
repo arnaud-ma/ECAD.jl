@@ -1,10 +1,3 @@
-using Printf: @sprintf
-using Downloads: Downloads
-using DataDeps: DataDeps, DataDep
-using ProgressMeter: ProgressMeter, Progress, finish!
-using URIs: URIs, resolvereference
-
-
 const DATA_LINK = "https://knmi-ecad-assets-prd.s3.amazonaws.com/download/"
 
 """

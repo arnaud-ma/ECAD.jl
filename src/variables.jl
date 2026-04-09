@@ -1,9 +1,4 @@
-using InteractiveUtils: subtypes
-using ArgCheck: @argcheck
-using TypedTables: TypedTables
-
 abstract type Variable end
-
 
 """
     canonical_name(var::Variable) -> Symbol

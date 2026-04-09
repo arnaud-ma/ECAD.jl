@@ -1,13 +1,3 @@
-# export digest_sources, digest_stations, digest_observations
-# export to_sources_df, to_stations_df, to_observations_df
-
-using ArgCheck: ArgCheck
-using CSV: CSV
-using DataFramesMeta: DataFramesMeta, @chain, @rsubset, @rtransform!, @select,
-    ByRow, DataFrame, DataFrames, leftjoin, select
-using Dates: Dates, @dateformat_str, Date
-using AstroAngles: parse_dms
-
 """
     const GTS_FALLBACK_PARTICIPANT_ID = Int(typemax(Int32))
 

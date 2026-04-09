@@ -133,6 +133,7 @@ function StationData(
             observations = outerjoin(observations, obs, on = [:station_id, :date], makeunique = true)
         end
     end
+    unique!(observations)
     return StationData(
         station_id,
         station_info.name,

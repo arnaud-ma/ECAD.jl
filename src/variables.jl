@@ -86,6 +86,7 @@ pretty_name(::T) where {T <: Variable} = camelcase_to_words(string(nameof(T)), '
 Return a vector of instances of all defined `Variable` subtypes.
 """
 all_variables() = [T() for T in subtypes(Variable)]
+all_canonical_names() = canonical_name.(all_variables())
 
 function summary_variables(subset::Vector{Variable} = all_variables())
     x1 = map(var -> (var, longname(var), canonical_NAME(var), sha(var)), subset)

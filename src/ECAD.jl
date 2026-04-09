@@ -5,9 +5,9 @@ using AstroAngles: parse_dms
 using CSV: CSV
 using DataDeps: DataDeps, DataDep
 using DataFrames: Not, innerjoin, ncol, nrow, outerjoin, rename!
-using DataFramesMeta: @rsubset, @rsubset!, @rtransform!, @select, @transform!, ByRow, DataFrame,
+using DataFramesMeta: @rsubset, @rsubset!, @rtransform!, @select, @select!, @transform!, ByRow, DataFrame,
     leftjoin, select, select!
-using Dates: @dateformat_str, Date
+using Dates: @dateformat_str, Date, Day
 using Downloads: Downloads
 using InteractiveUtils: subtypes
 using Mmap: Mmap

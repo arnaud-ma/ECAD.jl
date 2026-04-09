@@ -181,21 +181,59 @@ function intersect_stations(vars::AbstractVector{<:VariableData})
     end
 end
 
+function missing_dates(station::StationData)
+    dates = station.observations.date
+    date_summary = _date_summary(dates)
+    date_summary === nothing && return Date[]
+
+    observed_dates = Set(dates)
+    return collect(filter(date -> !(date in observed_dates), date_summary.min_date:Day(1):date_summary.max_date))
+end
+
+function nb_missing_dates(station::StationData)
+    date_summary = _date_summary(station.observations.date)
+    return date_summary === nothing ? 0 : date_summary.missing
+end
+
+function _date_summary(dates::AbstractVector{<:Date})
+    isempty(dates) && return nothing
+
+    min_date = first(dates)
+    max_date = min_date
+    observed_dates = Set{Date}()
+    sizehint!(observed_dates, length(dates))
+
+    for date in dates
+        push!(observed_dates, date)
+        date < min_date && (min_date = date)
+        date > max_date && (max_date = date)
+    end
+
+    date_range = min_date:Day(1):max_date
+    return (; min_date, max_date, missing = max(length(date_range) - length(observed_dates), 0), total = length(dates))
+end
+
+function _missing_percentage(missing::Integer, total::Integer)
+    total == 0 && return 0.0
+    return round(100 * missing / total, digits = 2)
+end
+
 # ---------------------------------------------------------------------------- #
 #                                    Display                                   #
 # ---------------------------------------------------------------------------- #
 
 function Base.show(io::IO, station::StationData)
     vars = join(string.(variable.(station.variables)), ", ")
+    # vars = join(pretty_name.(variable.(station.variables)), ", ")
     print(
         io,
         "StationData(",
         "id=", station.id,
         ", name=\"", station.name, "\"",
-        ", lat=", station.latitude, " arcsec",
-        ", lon=", station.longitude, " arcsec",
-        ", elev=", station.elevation, " m",
-        ", vars=[", vars, "]",
+        ", latitude=", station.latitude, " arcsec",
+        ", longitude=", station.longitude, " arcsec",
+        ", elevation=", station.elevation, " m",
+        ", variables=[", vars, "]",
         ", rows=", nrow(station.observations),
         ", cols=", ncol(station.observations),
         ")",
@@ -206,32 +244,63 @@ end
 function Base.show(io::IO, _mime::MIME"text/plain", station::StationData)
     obs = station.observations
     vars = string.(variable.(station.variables))
+    rows = nrow(obs)
+    cols = String.(names(obs))
+    has_date = rows > 0 && "date" in cols
+    date_summary = has_date ? _date_summary(obs.date) : nothing
+    all_names = Set(all_canonical_names())
+    value_cols = [col for col in cols if Symbol(col) in all_names]
 
     println(io, "StationData:")
     println(io, "├ ID: ", station.id)
     println(io, "├ Name: ", station.name)
-    println(io, "├ Coordinates: lat=", station.latitude, " arcsec, lon=", station.longitude, " arcsec")
+    println(io, "├ Coordinates: latitude=", station.latitude, " arcsec, longitude=", station.longitude, " arcsec")
     println(io, "├ Elevation: ", station.elevation, " m")
     println(io, "├ Variables (", length(vars), "): ", isempty(vars) ? "none" : join(vars, ", "))
-    println(io, "├ Observations: ", nrow(obs), " rows × ", ncol(obs), " cols")
+    println(io, "├ Observations: ", rows, " rows × ", ncol(obs), " cols")
 
-    cols = String.(names(obs))
-    if ("date" in cols) && nrow(obs) > 0
-        println(io, "├ Date range: ", minimum(obs.date), " -> ", maximum(obs.date))
-    else
+    if date_summary === nothing
         println(io, "├ Date range: n/a")
+    else
+        println(
+            io, "├ Date range: ",
+            date_summary.min_date, " -> ", date_summary.max_date,
+            " (", date_summary.missing,
+            " (", _missing_percentage(date_summary.missing, rows), "%) missing dates)",
+        )
     end
 
     preview_n = min(8, length(cols))
     if preview_n == 0
-        print(io, "└ Columns: none")
+        println(io, "├ Columns: none")
     else
         preview = join(cols[1:preview_n], ", ")
         if length(cols) > preview_n
-            print(io, "└ Columns: ", preview, ", ...")
+            println(io, "├ Columns: ", preview, ", ...")
         else
-            print(io, "└ Columns: ", preview)
+            println(io, "├ Columns: ", preview)
         end
     end
+    println(io, "└ Missing values: ")
+
+    tab = "    "
+    for col in value_cols
+        n_missing = count(ismissing, obs[!, col])
+        println(
+            io, tab,
+            "├ ", col, ": ",
+            n_missing, " over ", rows,
+            " (", _missing_percentage(n_missing, rows), "%)"
+        )
+    end
+
+    nb_all_missing = isempty(value_cols) ? 0 : count(x -> all(ismissing, x), eachrow(obs[!, value_cols]))
+    print(
+        io, tab,
+        "└ all values combined: ",
+        nb_all_missing, " over ", rows,
+        " (", _missing_percentage(nb_all_missing, rows), "%)"
+    )
+
     return nothing
 end

@@ -111,12 +111,11 @@ Load the sources data frame from the zip file for the given variable.
 function load_sources(var::VariableData)
     file = "sources.txt"
     @argcheck file in zip_names(zipcontent(var))
-    return @chain var begin
-        zip_readentry(_, file)
-        IOBuffer
-        digest_sources
-        to_sources_df
-    end
+    x1 = zip_readentry(var, file)
+    x2 = IOBuffer(x1)
+    x3 = digest_sources(x2)
+    x4 = to_sources_df(x3)
+    return x4
 end
 
 """
@@ -135,12 +134,11 @@ Load the stations data frame from the zip file for the given variable.
 function load_stations(var::VariableData)
     file = "stations.txt"
     @argcheck file in zip_names(zipcontent(var))
-    return @chain var begin
-        zip_readentry(_, file)
-        IOBuffer
-        digest_stations
-        to_stations_df
-    end
+    x1 = zip_readentry(var, file)
+    x2 = IOBuffer(x1)
+    x3 = digest_stations(x2)
+    x4 = to_stations_df(x3)
+    return x4
 end
 
 """
@@ -177,7 +175,7 @@ function load_elements(file::String)
         :variable_name,
     )
 end
-const ELEMENTS = joinpath(pkgdir(ECAD), "data", "elements.csv") |> load_elements
+const ELEMENTS = joinpath(something(pkgdir(ECAD)), "data", "elements.csv") |> load_elements
 load_elements() = ELEMENTS
 load_elements(::Nothing) = load_elements()
 
@@ -213,11 +211,11 @@ should be consulted to see what each element ID means.
 function load_observations(var::VariableData, station_id::Integer; warn_multiple_elements = true)
     obs_file = string(canonical_NAME(variable(var)), "_", @sprintf("STAID%06.d.txt", station_id))
     @argcheck obs_file in zip_names(zipcontent(var)) "Observation file for station $station_id not found in archive: $obs_file"
-    result = @chain var begin
-        zip_readentry(_, obs_file)
-        IOBuffer
-        digest_observations
-        to_observations_df(_, load_sources(var))
+    result = let
+        x1 = zip_readentry(var, obs_file)
+        x2 = IOBuffer(x1)
+        x3 = digest_observations(x2)
+        to_observations_df(x3, load_sources(var))
     end
     if warn_multiple_elements
         uni = unique(result.element_id)
@@ -251,9 +249,8 @@ function Base.show(io::IO, var::VariableData)
     return nothing
 end
 
-function Base.show(io::IO, mime::MIME"text/plain", var::VariableData)
+function Base.show(io::IO, _mime::MIME"text/plain", var::VariableData)
     v = variable(var)
-    name = uppercase(string(canonical_name(v)))
     zf = zipfile(var)
     names = zip_names(zipcontent(var))
     stations = station_ids(var)

@@ -55,11 +55,10 @@ function raw_station(observations, var_data::VariableData{T}, station_id::Intege
     station_ids = unique(observations.station_id)
     @argcheck length(station_ids) == 1 "Multiple station IDs found in observations for station $station_id: $(map(String, station_ids))"
     station_id = only(station_ids)
-    return @chain var_data begin
-        load_stations
-        @rsubset(:id == station_id)
-        only(eachrow(_))
-    end
+    x1 = load_stations(var_data)
+    x2 = @rsubset(x1, :id == station_id)
+    x3 = only(eachrow(x2))
+    return x3
 end
 
 """
@@ -203,7 +202,7 @@ function Base.show(io::IO, station::StationData)
     return nothing
 end
 
-function Base.show(io::IO, mime::MIME"text/plain", station::StationData)
+function Base.show(io::IO, _mime::MIME"text/plain", station::StationData)
     obs = station.observations
     vars = string.(variable.(station.variables))
 

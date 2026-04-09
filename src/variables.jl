@@ -88,15 +88,14 @@ Return a vector of instances of all defined `Variable` subtypes.
 all_variables() = [T() for T in subtypes(Variable)]
 
 function summary_variables(subset::Vector{Variable} = all_variables())
-    return @chain subset begin
-        map(var -> (var, longname(var), canonical_NAME(var), sha(var)), _)
-        TypedTables.Table(;
-            variable = getindex.(_, 1),
-            longname = getindex.(_, 2),
-            canonical_NAME = getindex.(_, 3),
-            sha = getindex.(_, 4),
-        )
-    end
+    x1 = map(var -> (var, longname(var), canonical_NAME(var), sha(var)), subset)
+    x2 = TypedTables.Table(;
+        variable = getindex.(x1, 1),
+        longname = getindex.(x1, 2),
+        canonical_NAME = getindex.(x1, 3),
+        sha = getindex.(x1, 4),
+    )
+    return x2
 end
 
 """

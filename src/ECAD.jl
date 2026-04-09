@@ -3,10 +3,9 @@ module ECAD
 using ArgCheck: @argcheck
 using AstroAngles: parse_dms
 using CSV: CSV
-using Chain: @chain
 using DataDeps: DataDeps, DataDep
 using DataFrames: Not, innerjoin, ncol, nrow, outerjoin, rename!
-using DataFramesMeta: @rsubset, @rtransform!, @select, @transform!, ByRow, DataFrame,
+using DataFramesMeta: @rsubset, @rsubset!, @rtransform!, @select, @transform!, ByRow, DataFrame,
     leftjoin, select, select!
 using Dates: @dateformat_str, Date
 using Downloads: Downloads

@@ -259,12 +259,11 @@ function repair_source_ids!(observation_df, sources_df; source_name = "(input)")
     end
 
     station = only(stations)
-    available_sources = @chain sources_df begin
-        @select(:id, :station_id)
-        @rsubset(:station_id == station)
-        @select(:id)
-        getproperty(:id)
-        collect
+    available_sources = let
+        x1 = @select(sources_df, :id, :station_id)
+        @rsubset!(x1, :station_id == station)
+        @select!(x1, :id)
+        collect(x1.id)
     end
 
     obs_sources = unique(observation_df.source_id)

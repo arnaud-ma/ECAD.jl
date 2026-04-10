@@ -11,11 +11,11 @@ end
 JLD2.writeas(::Type{<:VariableData}) = VariableDataSerial
 
 function JLD2.wconvert(::Type{VariableDataSerial}, v::VariableData)
-    VariableDataSerial(v.variable, v.filepath)
+    return VariableDataSerial(v.variable, v.filepath)
 end
 
 function JLD2.rconvert(::Type{<:VariableData}, v::VariableDataSerial)
-    VariableData(v.variable, v.filepath; memory_map=true)
+    return VariableData(v.variable, v.filepath; memory_map = true)
 end
 
 end # module JLD2Ext

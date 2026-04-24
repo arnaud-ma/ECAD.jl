@@ -19,17 +19,23 @@ end
 
 """
     from_name(x::Union{Symbol, String, Val}) -> Variable
+    from_name(x::Variable) -> Variable
 
-Convert a canonical variable name to its corresponding `Variable` type instance.
+Convert a canonical variable name to its corresponding `Variable` type instance. Do nothing
+if the input i already is a `Variable`.
 
 # Example
 ```julia-repl
 julia> from_name(:cc)
 CloudCover()
+
+julia> from_name(from_name(:cc))
+CloudCover()
 ```
 """
 from_name(x::Symbol) = from_name(Val(x))
 from_name(x::String) = from_name(Symbol(x))
+from_name(x::Variable) = x
 
 """
     canonical_NAME(var::Variable) -> String

@@ -179,12 +179,12 @@ const ELEMENTS = joinpath(something(pkgdir(ECAD)), "data", "elements.csv") |> lo
 load_elements() = ELEMENTS
 load_elements(::Nothing) = load_elements()
 
-function load_elements(var::VariableData, file = nothing)
-    elements = load_elements(file)
-    variable_id = var |> variable |> canonical_name |> string |> uppercase
-    @assert variable_id in elements.variable_id "Variable ID $(variable_id) not found in elements file"
-    return @rsubset(elements, :variable_id == variable_id)
+function load_elements(var, file = nothing)
+    var_id = var |> from_name |> canonical_NAME
+    @argcheck var_id in ELEMENTS.variable_id "Variable ID $(var_id) not found in elements data frame. Check the variable name or provide a custom elements file with the `file` argument."
+    return @rsubset(ELEMENTS, :variable_id == var_id)
 end
+load_elements(var::VariableData, file = nothing) = load_elements(variable(var), file)
 
 """
     load_observations(var::VariableData, station_id::Integer) -> DataFrame

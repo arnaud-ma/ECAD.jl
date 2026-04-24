@@ -2,6 +2,7 @@ module ECAD
 
 using ArgCheck: @argcheck
 using AstroAngles: parse_dms
+using CategoricalArrays: categorical
 using CSV: CSV
 using DataDeps: DataDeps, DataDep
 using DataFrames: Not, innerjoin, ncol, nrow, outerjoin, rename!

@@ -207,8 +207,14 @@ function digest_observations(io)
     )
 end
 
-const QUALITY_LABELS = Dict(0 => "valid", 1 => "suspect", 9 => "missing")
-quality_label(q) = QUALITY_LABELS[q]
+const QUALITY_LABELS = ["valid", "suspect", "missing"]
+function quality_label(q)
+    q == 0 && return "valid"
+    q == 1 && return "suspect"
+    ismissing(q) && return "missing"
+    q == 9 && return "missing"
+    throw(ArgumentError("Unknown quality code: $q"))
+end
 
 function to_observations_df(df, sources_df)
     res = select(
@@ -219,6 +225,7 @@ function to_observations_df(df, sources_df)
         4 => :value,
         5 => ByRow(quality_label) => :quality,
     )
+    res.quality = categorical(res.quality, ordered = true, levels = QUALITY_LABELS)
     repair_source_ids!(res, sources_df)
     source_element = select(sources_df, :id => :source_id, :element_id)
     res = leftjoin(res, source_element, on = :source_id)

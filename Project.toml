@@ -31,7 +31,7 @@ JLD2Ext = "JLD2"
 
 [compat]
 ArgCheck = "2.5.0"
-AstroAngles = "0.2.0"
+AstroAngles = "0.2.0, 0.3"
 CSV = "0.10.16"
 CategoricalArrays = "1.1.0"
 DataDeps = "0.7.13"
